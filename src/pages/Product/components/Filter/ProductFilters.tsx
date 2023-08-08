@@ -1,20 +1,21 @@
 import { useMemo } from "react";
 import { InputNumber, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import useGetCategories from "../../../../hooks/categories/use-get-categories";
+
+import useGetCategories from "@/hooks/api/categories/use-get-categories";
 import {
   setSelectedBrands,
   setSelectedCategories,
   setMaxPrice,
   setMinPrice,
-} from "../../../../store/filters/filters-reducer";
+} from "@/store/filters/filters-reducer";
 import {
   getSelectedBrands,
   getSelectedCategories,
   getMaxPrice,
   getMinPrice,
-} from "../../../../store/filters/filters-selector";
-import { getBrands } from "../../../../store/brand/brand-selector";
+} from "@/store/filters/filters-selector";
+import { getBrands } from "@/store/brand/brand-selector";
 
 function FilterProduct() {
   const categories = useGetCategories();

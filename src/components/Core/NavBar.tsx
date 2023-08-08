@@ -1,16 +1,12 @@
 import { Layout, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+
 import Cart from "../Cart/Cart";
-import { ReactNode } from "react";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
-interface Props {
-  children: ReactNode;
-}
-
-function NavBar({ children }: Props) {
+function NavBar() {
   const navigate = useNavigate();
 
   return (
@@ -28,7 +24,9 @@ function NavBar({ children }: Props) {
         </div>
       </Header>
       <Content className="px-[30px]">
-        <div className="site-layout-content my-[30px]">{children}</div>
+        <div className="site-layout-content my-[30px]">
+          <Outlet />
+        </div>
       </Content>
     </Layout>
   );

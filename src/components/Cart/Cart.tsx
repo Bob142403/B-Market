@@ -8,14 +8,15 @@ import {
   message,
 } from "antd";
 import Icon, { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCart } from "../../store/cart/cart-selector";
+
+import { getProductsCart } from "@/store/cart/cart-selector";
 import {
   deleteFromCart,
   setCart,
   setQuantityById,
-} from "../../store/cart/cart-reducer";
+} from "@/store/cart/cart-reducer";
 
 const { Text } = Typography;
 
@@ -24,7 +25,7 @@ function Cart() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const dispatch = useDispatch();
-  const cart = useSelector(getCart);
+  const cart = useSelector(getProductsCart);
 
   const total = useMemo(() => {
     return cart.reduce((sum, elem) => sum + elem.price * elem.quantity, 0);
@@ -38,20 +39,26 @@ function Cart() {
     setOpen(false);
   };
 
-  const deleteProduct = (id: number) => {
-    dispatch(deleteFromCart(id));
-  };
-  const setCount = (id: number, value: number | null) => {
-    dispatch(setQuantityById({ id, value }));
-  };
+  const deleteProduct = useCallback(
+    (id: number) => {
+      dispatch(deleteFromCart(id));
+    },
+    [dispatch]
+  );
+  const setCount = useCallback(
+    (id: number, value: number | null) => {
+      dispatch(setQuantityById({ id, value }));
+    },
+    [dispatch]
+  );
 
-  const buyAllInCart = () => {
+  const buyAllInCart = useCallback(() => {
     dispatch(setCart([]));
     messageApi.success({
       content: `You bought all these products for ${total}$`,
     });
     onClose();
-  };
+  }, [dispatch, messageApi, total]);
 
   return (
     <>
@@ -83,7 +90,7 @@ function Cart() {
                 <InputNumber
                   min={1}
                   max={item.maxCount}
-                  defaultValue={1}
+                  value={item.quantity}
                   onChange={(value) => setCount(item.id, value)}
                 />
                 <span>{item.price * item.quantity}$</span>

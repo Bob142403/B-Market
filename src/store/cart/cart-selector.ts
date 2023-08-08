@@ -1,7 +1,10 @@
-import Cart from "../../types/Cart";
+import { createSelector } from "@reduxjs/toolkit";
+import { CartProduct } from "../../types/Cart";
 import { RootState } from "../store";
 
-export const getCart = (state: RootState) => state.cart.cart;
+export const getProductsCart = (state: RootState) => state.cart.products;
 
-export const checkProductInCart = (productId: number) => (state: RootState) =>
-  state.cart.cart.find((cart: Cart) => cart.id === productId);
+export const checkProductInCart = (productId: number) =>
+  createSelector(getProductsCart, (cart) =>
+    cart.find((cart: CartProduct) => cart.id === productId)
+  );

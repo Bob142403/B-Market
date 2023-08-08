@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
-import productApi from "../../api/product";
+import productApi from "@/api/product";
 import { useDispatch } from "react-redux";
-import { setProducts } from "../../store/products/products-reducer";
-import { Product } from "../../types/Product";
-import { setAllBrands } from "../../store/brand/brand-reducer";
+import { setProducts } from "@/store/products/products-reducer";
+import { Product } from "@/types/Product";
+import { setAllBrands } from "@/store/brand/brand-reducer";
 
 function useGetProducts() {
   const dispatch = useDispatch();

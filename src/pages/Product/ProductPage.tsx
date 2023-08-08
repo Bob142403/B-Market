@@ -1,39 +1,29 @@
 import { Breadcrumb, Carousel, Rate, Typography, message } from "antd";
-import { Link, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../store/cart/cart-reducer";
-import { checkProductInCart } from "../../store/cart/cart-selector";
-import useGetProductById from "../../hooks/product/use-get-product-by-id";
+import { Link } from "react-router-dom";
+
+import useGetProductById from "@/hooks/api/product/use-get-product-by-id";
+import useGetProductId from "@/hooks/params/use-get-product-id";
+import useAddProductToCart from "@/hooks/cart/use-add-product-to-cart";
+import { useCallback } from "react";
 
 const { Title } = Typography;
+const DEFAULT_QUANTITY = 1;
 
 function ProductPage() {
-  const { productId } = useParams();
-  const dispatch = useDispatch();
+  const productId = useGetProductId();
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data: product } = useGetProductById(productId);
-  const checkProduct = useSelector(checkProductInCart(+(productId || 0)));
+  const addProductToCart = useAddProductToCart(messageApi);
 
-  function addCart() {
-    if (!checkProduct) {
-      dispatch(
-        addToCart({
-          id: product.id,
-          quantity: 1,
-          title: product.title,
-          price: product.price,
-          maxCount: product.stock,
-        })
-      );
-      messageApi.success({
-        content: `${product.title} has been added to Cart`,
-      });
-    } else
-      messageApi.warning({
-        content: `${product.title} already exist  in Cart`,
-      });
-  }
+  const hadleAddCart = useCallback(() => {
+    addProductToCart({
+      ...product,
+      id: product.id,
+      quantity: DEFAULT_QUANTITY,
+      maxCount: product.stock,
+    });
+  }, [addProductToCart, product]);
 
   return (
     <>
@@ -77,7 +67,7 @@ function ProductPage() {
                 <Title level={5}>Price: {product.price}$</Title>
                 <button
                   type="button"
-                  onClick={addCart}
+                  onClick={hadleAddCart}
                   className="ml-5 bg-white hover:bg-slate-100 focus:outline-none focus:ring focus:ring-slate-200 active:bg-slate-300 px-5 py-2 text-sm leading-5 rounded-xl font-semibold text-black"
                 >
                   Add To Cart
